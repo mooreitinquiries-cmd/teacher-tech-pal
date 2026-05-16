@@ -112,18 +112,21 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          onboarding_completed: boolean
         }
         Insert: {
           created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
+          onboarding_completed?: boolean
         }
         Update: {
           created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
+          onboarding_completed?: boolean
         }
         Relationships: []
       }
