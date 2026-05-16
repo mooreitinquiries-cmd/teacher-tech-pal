@@ -109,7 +109,7 @@ function OnboardingPage() {
   const progress = ((step + 1) / STEPS.length) * 100;
 
   async function finish() {
-    await markComplete({ data: {} });
+    await markComplete({ data: undefined });
     nav({ to: "/app/chat" });
   }
 
