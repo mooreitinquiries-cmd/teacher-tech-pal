@@ -24,7 +24,7 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (user) nav({ to: "/app/chat" });
+    if (user) nav({ to: "/app/onboarding" });
   }, [user, nav]);
 
   async function signIn(e: React.FormEvent) {
