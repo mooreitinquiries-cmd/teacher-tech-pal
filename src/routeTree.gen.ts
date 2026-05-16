@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppVaultRouteImport } from './routes/app.vault'
+import { Route as AppOnboardingRouteImport } from './routes/app.onboarding'
 import { Route as AppManualsRouteImport } from './routes/app.manuals'
 import { Route as AppChatRouteImport } from './routes/app.chat'
 import { Route as AppAdminRouteImport } from './routes/app.admin'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppVaultRoute = AppVaultRouteImport.update({
   id: '/vault',
   path: '/vault',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOnboardingRoute = AppOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AppRoute,
 } as any)
 const AppManualsRoute = AppManualsRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AppAdminRoute
   '/app/chat': typeof AppChatRoute
   '/app/manuals': typeof AppManualsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/vault': typeof AppVaultRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AppAdminRoute
   '/app/chat': typeof AppChatRoute
   '/app/manuals': typeof AppManualsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/vault': typeof AppVaultRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/app/admin': typeof AppAdminRoute
   '/app/chat': typeof AppChatRoute
   '/app/manuals': typeof AppManualsRoute
+  '/app/onboarding': typeof AppOnboardingRoute
   '/app/vault': typeof AppVaultRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/chat'
     | '/app/manuals'
+    | '/app/onboarding'
     | '/app/vault'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/chat'
     | '/app/manuals'
+    | '/app/onboarding'
     | '/app/vault'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/chat'
     | '/app/manuals'
+    | '/app/onboarding'
     | '/app/vault'
   fileRoutesById: FileRoutesById
 }
@@ -147,6 +159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppVaultRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/onboarding': {
+      id: '/app/onboarding'
+      path: '/onboarding'
+      fullPath: '/app/onboarding'
+      preLoaderRoute: typeof AppOnboardingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/manuals': {
       id: '/app/manuals'
       path: '/manuals'
@@ -175,6 +194,7 @@ interface AppRouteChildren {
   AppAdminRoute: typeof AppAdminRoute
   AppChatRoute: typeof AppChatRoute
   AppManualsRoute: typeof AppManualsRoute
+  AppOnboardingRoute: typeof AppOnboardingRoute
   AppVaultRoute: typeof AppVaultRoute
 }
 
@@ -182,6 +202,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdminRoute: AppAdminRoute,
   AppChatRoute: AppChatRoute,
   AppManualsRoute: AppManualsRoute,
+  AppOnboardingRoute: AppOnboardingRoute,
   AppVaultRoute: AppVaultRoute,
 }
 
@@ -195,3 +216,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

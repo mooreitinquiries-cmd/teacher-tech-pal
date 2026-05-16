@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { user, loading } = useAuth();
-  if (!loading && user) return <Navigate to="/app/chat" />;
+  if (!loading && user) return <Navigate to="/app/onboarding" />;
 
   return (
     <div className="min-h-screen bg-background">
