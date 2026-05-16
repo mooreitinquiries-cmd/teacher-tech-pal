@@ -1,9 +1,10 @@
 import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, MessageSquareText, BookOpen, KeyRound, Shield, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
   component: AppLayout,
@@ -13,12 +14,31 @@ function AppLayout() {
   const { user, loading, isAdmin, signOut } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/login" });
   }, [user, loading, nav]);
 
-  if (loading || !user) {
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => {
+        setOnboardingDone(data?.onboarding_completed ?? false);
+      });
+  }, [user]);
+
+  useEffect(() => {
+    if (onboardingDone === false && loc.pathname !== "/app/onboarding") {
+      nav({ to: "/app/onboarding" });
+    }
+  }, [onboardingDone, loc.pathname, nav]);
+
+  if (loading || !user || onboardingDone === null) {
     return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading…</div>;
   }
 
